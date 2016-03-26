@@ -1,6 +1,8 @@
 A Python Mode-S Decoder
 =======================
 
+.. image:: https://travis-ci.org/watterso/pyModeS.svg?branch=master
+
 Python library for Mode-S message decoding. Two seprate methods are
 develop to decode the following messages:
 
