@@ -57,3 +57,6 @@ target/
 
 # PyCharm
 .idea/
+
+# pre-commit, lets not make this mandatory just yet
+.pre-commit-config.yaml
