@@ -318,35 +318,51 @@ def velocity(msg):
 
     subtype = util.bin2int(msgbin[37:40])
 
-    if subtype in (1, 2):
-        v_ew_sign = util.bin2int(msgbin[45])
-        v_ew = util.bin2int(msgbin[46:56]) - 1       # east-west velocity
+    hdg, spd, tag = calculate_speed_and_heading(msgbin, subtype)
 
-        v_ns_sign = util.bin2int(msgbin[56])
-        v_ns = util.bin2int(msgbin[57:67]) - 1       # north-south velocity
-
-        v_we = -1*v_ew if v_ew_sign else v_ew
-        v_sn = -1*v_ns if v_ns_sign else v_ns
-
-        spd = math.sqrt(v_sn*v_sn + v_we*v_we)  # unit in kts
-
-        hdg = math.atan2(v_we, v_sn)
-        hdg = math.degrees(hdg)                 # convert to degrees
-        hdg = hdg if hdg >= 0 else hdg + 360    # no negative val
-
-        tag = 'GS'
-
-    else:
-        hdg = util.bin2int(msgbin[46:56]) / 1024.0 * 360.0
-        spd = util.bin2int(msgbin[57:67])
-
-        tag = 'AS'
-
-    vr_sign = util.bin2int(msgbin[68])
-    vr = util.bin2int(msgbin[68:77])             # vertical rate
-    rocd = -1*vr if vr_sign else vr         # rate of climb/descend
+    rocd = rate_of_climb(msgbin)
 
     return int(spd), round(hdg, 1), int(rocd), tag
+
+
+def calculate_speed_and_heading(msgbin, subtype):
+    if subtype in (1, 2):
+        hdg, spd, tag = ground_speed(msgbin)
+
+    else:
+        hdg, spd, tag = air_speed(msgbin)
+    return hdg, spd, tag
+
+
+def rate_of_climb(msgbin):
+    # rate of climb in ft/min
+    vr_sign = util.bin2int(msgbin[68])
+    vr = util.bin2int(msgbin[68:77])  # vertical rate
+    rocd = -1 * vr if vr_sign else vr  # rate of climb/descend
+    return rocd
+
+
+def air_speed(msgbin):
+    hdg = util.bin2int(msgbin[46:56]) / 1024.0 * 360.0
+    spd = util.bin2int(msgbin[57:67])
+    tag = 'AS'
+    return hdg, spd, tag
+
+
+def ground_speed(msgbin):
+    # speed if aircraft was on the ground in knots
+    v_ew_sign = util.bin2int(msgbin[45])
+    v_ew = util.bin2int(msgbin[46:56]) - 1  # east-west velocity
+    v_ns_sign = util.bin2int(msgbin[56])
+    v_ns = util.bin2int(msgbin[57:67]) - 1  # north-south velocity
+    v_we = -1 * v_ew if v_ew_sign else v_ew
+    v_sn = -1 * v_ns if v_ns_sign else v_ns
+    spd = math.sqrt(v_sn * v_sn + v_we * v_we)  # unit in kts
+    hdg = math.atan2(v_we, v_sn)
+    hdg = math.degrees(hdg)  # convert to degrees
+    hdg = hdg if hdg >= 0 else hdg + 360  # no negative val
+    tag = 'GS'
+    return hdg, spd, tag
 
 
 def speed_heading(msg):
