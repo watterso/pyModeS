@@ -19,6 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import math
 from pyModeS import util
+from pyModeS.objects.speed import AirSpeed
+from pyModeS.objects.speed import GroundSpeed
 
 
 def df(msg):
@@ -301,6 +303,14 @@ def nic(msg):
 # Velocity
 # ---------------------------------------------
 
+def extract_speed(hex_msg):
+    speed, heading, roc, tag = velocity(hex_msg)
+    if tag == 'GS':
+        return GroundSpeed(speed, heading, roc)
+    elif tag == 'AS':
+        return AirSpeed(speed, heading, roc)
+
+
 def velocity(msg):
     """Calculate the speed, heading, and vertical rate
     Args:
@@ -315,11 +325,9 @@ def velocity(msg):
         raise RuntimeError("%s: Not a airborne velocity message" % msg)
 
     msgbin = util.hex2bin(msg)
-
     subtype = util.bin2int(msgbin[37:40])
 
     hdg, spd, tag = calculate_speed_and_heading(msgbin, subtype)
-
     rocd = rate_of_climb(msgbin)
 
     return int(spd), round(hdg, 1), int(rocd), tag
@@ -328,7 +336,6 @@ def velocity(msg):
 def calculate_speed_and_heading(msgbin, subtype):
     if subtype in (1, 2):
         hdg, spd, tag = ground_speed(msgbin)
-
     else:
         hdg, spd, tag = air_speed(msgbin)
     return hdg, spd, tag
@@ -350,7 +357,6 @@ def air_speed(msgbin):
 
 
 def ground_speed(msgbin):
-    # speed if aircraft was on the ground in knots
     v_ew_sign = util.bin2int(msgbin[45])
     v_ew = util.bin2int(msgbin[46:56]) - 1  # east-west velocity
     v_ns_sign = util.bin2int(msgbin[56])
