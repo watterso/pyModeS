@@ -18,8 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import math
-from pyModeS.exceptions import InvalidDownlinkFormat
+
 from pyModeS import util
+from pyModeS.adsb_type_codes import VELOCITY
 from pyModeS.objects.speed import AirSpeed
 from pyModeS.objects.speed import GroundSpeed
 
@@ -306,8 +307,14 @@ def nic(msg):
 # Velocity
 # ---------------------------------------------
 
-def extract_speed(hex_msg):
-    speed, heading, roc, tag = velocity(hex_msg)
+def extract_speed_from_data_frame(data_frame_binary_string):
+    msgbin = '0'*37 + data_frame_binary_string
+    subtype = util.bin2int(msgbin[37:40])
+    heading, speed, tag = calculate_speed_and_heading(
+        msgbin,
+        subtype
+    )
+    roc = rate_of_climb(msgbin)
     if tag == 'GS':
         return GroundSpeed(speed, heading, roc)
     elif tag == 'AS':
@@ -324,7 +331,7 @@ def velocity(msg):
             ('GS' for ground speed, 'AS' for airspeed)
     """
 
-    if typecode(msg) != 19:
+    if typecode(msg) != VELOCITY:
         raise RuntimeError("%s: Not a airborne velocity message" % msg)
 
     msgbin = util.hex2bin(msg)

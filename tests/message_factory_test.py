@@ -1,8 +1,8 @@
 from pyModeS.message_factory import AdsbMessageFactory
 from pyModeS.message_factory import MessageFactory
 from pyModeS.objects.message import AdsbMessage
+from pyModeS.objects.message import AdsbVelocityMessage
 from pyModeS.util import hex2bin
-from pyModeS.util import timestamp
 
 hex_string = '8D485020994409940838175B284F'
 binary_string = hex2bin(hex_string)
@@ -21,7 +21,6 @@ data_frame = binary_message[37:88]
 
 def test_adsb_message_factory():
     msg = AdsbMessageFactory.construct_message(
-        timestamp(),
         transponder_capability,
         aircraft_icao_address,
         type_code,
@@ -32,10 +31,9 @@ def test_adsb_message_factory():
 
 def test_adsb_message_factory_velocity():
     msg = AdsbMessageFactory.construct_message(
-        timestamp(),
         transponder_capability,
         aircraft_icao_address,
         type_code,
         data_frame
     )
-    assert isinstance(msg, Velocity)
+    assert isinstance(msg, AdsbVelocityMessage)

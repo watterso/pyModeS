@@ -1,6 +1,7 @@
 from pyModeS import adsb
 from pyModeS.objects.speed import AirSpeed
 from pyModeS.objects.speed import GroundSpeed
+from pyModeS.util import hex2bin
 
 
 def test_adsb_icao():
@@ -43,25 +44,31 @@ def test_nic():
 
 class TestAdsbVelocity:
 
+    ground_speed_message = '8D485020994409940838175B284F'
+    air_speed_message = '8DA05F219B06B6AF189400CBC33F'
+
     def test_ground_speed(self):
-        vgs = adsb.velocity('8D485020994409940838175B284F')
+        vgs = adsb.velocity(self.ground_speed_message)
         assert vgs == (159, 182.9, -263, 'GS')
 
     def test_air_speed(self):
-        vas = adsb.velocity('8DA05F219B06B6AF189400CBC33F')
+        vas = adsb.velocity(self.air_speed_message)
         assert vas == (376, 244.0, -274, 'AS')
 
-    def assert_speed_obj_type(self, hex_msg, expected_type):
-        assert isinstance(adsb.extract_speed(hex_msg), expected_type)
+    def assert_speed_obj_type_from_data_frame(self, hex_msg, expected_type):
+        bin_msg = hex2bin(hex_msg)
+        data_frame = bin_msg[37:88]
+        speed = adsb.extract_speed_from_data_frame(data_frame)
+        assert isinstance(speed, expected_type)
 
     def test_air_speed_obj(self):
-        self.assert_speed_obj_type(
-            '8DA05F219B06B6AF189400CBC33F',
+        self.assert_speed_obj_type_from_data_frame(
+            self.air_speed_message,
             AirSpeed
         )
 
     def test_ground_speed_obj(self):
-        self.assert_speed_obj_type(
-            '8D485020994409940838175B284F',
+        self.assert_speed_obj_type_from_data_frame(
+            self.ground_speed_message,
             GroundSpeed
         )
