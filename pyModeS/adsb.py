@@ -18,7 +18,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import math
+from pyModeS.exceptions import InvalidDownlinkFormat
 from pyModeS import util
+
+ADSB_DOWNLINK_FORMAT = 17
 
 
 def df(msg):
@@ -28,7 +31,7 @@ def df(msg):
     Returns:
         int: DF number
     """
-    return util.df(msg)
+    return util.downlink_format(msg)
 
 
 def icao(msg):

@@ -1,7 +1,8 @@
+import pytest
+
 from pyModeS import adsb
+from pyModeS.exceptions import InvalidDownlinkFormat
 
-
-# === TEST ADS-B package ===
 
 def test_adsb_icao():
     assert adsb.icao("8D406B902015A678D4D220AA4BDA") == "406B90"

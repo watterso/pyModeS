@@ -13,3 +13,13 @@ def test_crc_decode():
 def test_crc_encode():
     parity = util.crc("8D406B902015A678D4D220AA4BDA", encode=True)
     assert util.hex2bin("AA4BDA") == parity
+
+
+def test_downlink_format():
+    message = '8D485020994409940838175B284F'
+    assert util.downlink_format(message) == 17
+
+
+def test_transponder_capability():
+    message = '8D485020994409940838175B284F'
+    assert util.transponder_capability(message) == 5

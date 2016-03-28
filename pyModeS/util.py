@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+from datetime import datetime
 import math
 
 # the polynominal generattor code for CRC
@@ -39,10 +40,20 @@ def hex2int(hexstr):
     return int(hexstr, 16)
 
 
-def df(msg):
-    """Decode Downlink Format vaule, bits 1 to 5."""
+def downlink_format(msg):
+    """Decode Downlink Format value, bits 1 to 5."""
     msgbin = hex2bin(msg)
     return bin2int(msgbin[0:5])
+
+
+def transponder_capability(msg):
+    """Decode Transponder Capability (CA) value, bits 6 to 8."""
+    msgbin = hex2bin(msg)
+    return bin2int(msgbin[5:8])
+
+
+def timestamp():
+    return datetime.utcnow()
 
 
 def crc(msg, encode=False):

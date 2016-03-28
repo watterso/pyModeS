@@ -28,7 +28,7 @@ def df(msg):
     Returns:
         int: DF number
     """
-    return util.df(msg)
+    return util.downlink_format(msg)
 
 
 def data(msg):
