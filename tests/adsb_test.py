@@ -4,26 +4,26 @@ from pyModeS.objects.speed import GroundSpeed
 
 
 def test_adsb_icao():
-    assert adsb.icao("8D406B902015A678D4D220AA4BDA") == "406B90"
+    assert adsb.icao('8D406B902015A678D4D220AA4BDA') == '406B90'
 
 
 def test_adsb_category():
-    assert adsb.category("8D406B902015A678D4D220AA4BDA") == 5
+    assert adsb.category('8D406B902015A678D4D220AA4BDA') == 5
 
 
 def test_adsb_callsign():
-    assert adsb.callsign("8D406B902015A678D4D220AA4BDA") == "EZY85MH_"
+    assert adsb.callsign('8D406B902015A678D4D220AA4BDA') == 'EZY85MH_'
 
 
 def test_adsb_position():
-    pos = adsb.position("8D40058B58C901375147EFD09357",
-                        "8D40058B58C904A87F402D3B8C59",
+    pos = adsb.position('8D40058B58C901375147EFD09357',
+                        '8D40058B58C904A87F402D3B8C59',
                         1446332400, 1446332405)
     assert pos == (49.81755, 6.08442)
 
 
 def test_adsb_alt():
-    assert adsb.altitude("8D40058B58C901375147EFD09357") == 39000
+    assert adsb.altitude('8D40058B58C901375147EFD09357') == 39000
 
 
 def test_nic():
@@ -44,11 +44,11 @@ def test_nic():
 class TestAdsbVelocity:
 
     def test_ground_speed(self):
-        vgs = adsb.velocity("8D485020994409940838175B284F")
+        vgs = adsb.velocity('8D485020994409940838175B284F')
         assert vgs == (159, 182.9, -263, 'GS')
 
     def test_air_speed(self):
-        vas = adsb.velocity("8DA05F219B06B6AF189400CBC33F")
+        vas = adsb.velocity('8DA05F219B06B6AF189400CBC33F')
         assert vas == (376, 244.0, -274, 'AS')
 
     def assert_speed_obj_type(self, hex_msg, expected_type):
@@ -56,12 +56,12 @@ class TestAdsbVelocity:
 
     def test_air_speed_obj(self):
         self.assert_speed_obj_type(
-            "8DA05F219B06B6AF189400CBC33F",
+            '8DA05F219B06B6AF189400CBC33F',
             AirSpeed
         )
 
     def test_ground_speed_obj(self):
         self.assert_speed_obj_type(
-            "8D485020994409940838175B284F",
+            '8D485020994409940838175B284F',
             GroundSpeed
         )
