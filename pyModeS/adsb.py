@@ -91,10 +91,10 @@ def callsign(msg):
     if typecode(msg) < 1 or typecode(msg) > 4:
         raise RuntimeError("%s: Not a identification message" % msg)
 
-    chars = '#ABCDEFGHIJKLMNOPQRSTUVWXYZ#####_###############0123456789######'
     msgbin = util.hex2bin(msg)
-    csbin = msgbin[40:96]
-
+    csbin = msgbin[40:88]
+    
+    chars = '#ABCDEFGHIJKLMNOPQRSTUVWXYZ#####_###############0123456789######'
     cs = ''
     cs += chars[util.bin2int(csbin[0:6])]
     cs += chars[util.bin2int(csbin[6:12])]
@@ -331,7 +331,7 @@ def velocity(msg):
             ('GS' for ground speed, 'AS' for airspeed)
     """
 
-    if typecode(msg) != VELOCITY:
+    if typecode(msg) not in VELOCITY:
         raise RuntimeError("%s: Not a airborne velocity message" % msg)
 
     msgbin = util.hex2bin(msg)

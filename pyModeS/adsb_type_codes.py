@@ -1,1 +1,4 @@
-VELOCITY = 19
+AIRBORNE_POSITION = range(9, 18)
+IDENTIFICATION = range(1, 4)
+SURFACE_POSITION = range(5, 8)
+VELOCITY = range(19, 20)  # Just 19

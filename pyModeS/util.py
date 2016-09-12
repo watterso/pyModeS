@@ -32,12 +32,28 @@ def hex2bin(hexstr):
     return binstr
 
 
+def bin2hex(binstr):
+    return hex(bin2int(binstr))[2:].upper()
+
+
 def bin2int(binstr):
     return int(binstr, 2)
 
 
 def hex2int(hexstr):
     return int(hexstr, 16)
+
+
+def hex2dict(hex_str):
+    binary_message = hex2bin(hex_str)
+    return {
+        'binary': binary_message,
+        'downlink_format': bin2int(binary_message[0:5]),
+        'transponder_capability': bin2int(binary_message[5:8]),
+        'icao_address': bin2hex(binary_message[8:32]),
+        'type_code': bin2int(binary_message[32:37]),
+        'data_frame': (binary_message[37:88])
+    }
 
 
 def downlink_format(msg):

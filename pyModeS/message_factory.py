@@ -1,4 +1,5 @@
 from pyModeS.adsb import extract_speed_from_data_frame
+from pyModeS.adsb_type_codes import IDENTIFICATION
 from pyModeS.adsb_type_codes import VELOCITY
 from pyModeS.objects.message import AdsbMessage
 from pyModeS.objects.message import AdsbVelocityMessage
@@ -42,10 +43,12 @@ class AdsbMessageFactory:
     ):
 
         type_code_int = bin2int(type_code)
-        if type_code_int == VELOCITY:
+        if type_code_int in VELOCITY:
             return AdsbVelocityMessage(
                 transponder_capability,
                 aircraft_icao_address,
                 extract_speed_from_data_frame(data_frame)
             )
+        elif type_code_int in IDENTIFICATION:
+            pass
         return AdsbMessage(transponder_capability, aircraft_icao_address)

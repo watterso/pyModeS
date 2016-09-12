@@ -1,3 +1,5 @@
+
+
 class Speed:
     # speed - in knots
     # heading - in degrees
